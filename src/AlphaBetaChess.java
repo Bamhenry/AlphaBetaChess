@@ -5,10 +5,10 @@ public class AlphaBetaChess {
     static String chessBoard[][]={
         {"r","k","b","q","a","b","k","r"},
         {"p","p","p","p","p","p","p","p"},
+        {"K"," "," "," "," "," "," "," "},
         {" "," "," "," "," "," "," "," "},
         {" "," "," "," "," "," "," "," "},
         {" "," "," "," "," "," "," "," "},
-        {"R"," "," "," "," "," "," "," "},
         {"P","P","P","P","P","P","P","P"},
         {"R","K","B","Q","A","B","K","R"}};
     
@@ -22,7 +22,7 @@ public class AlphaBetaChess {
 //        f.add(ui);
 //        f.setSize(500, 500);
 //        f.setVisible(true);
-          System.out.println(possibleMoves());
+        System.out.println(possibleMoves());
     } 
     
     public static String possibleMoves() {
@@ -61,6 +61,7 @@ public class AlphaBetaChess {
     }
     //possible moves for rook
     public static String possibleR(int i) {
+        
         String list="", oldPiece;
         int r=i/8, c=i%8;
         int temp=1;
@@ -79,7 +80,7 @@ public class AlphaBetaChess {
                             //assume king is safe for now
                             list=list+r+c+r+(c+temp*j)+oldPiece;
                      }                 
-                    //if king is save then record move
+                    //if king is safe then record move
                     chessBoard[r][c]="R";
                     chessBoard[r][c+temp*j]=oldPiece;
                     temp++;
@@ -96,7 +97,7 @@ public class AlphaBetaChess {
                             //assume king is safe for now
                             list=list+r+c+r+(c+temp*j)+oldPiece;
                      }                 
-                    //if king is save then record move
+                    //if king is safe then record move
                     chessBoard[r][c]="R";
                     chessBoard[r][c+temp*j]=oldPiece;
                 }
@@ -116,7 +117,7 @@ public class AlphaBetaChess {
                             //assume king is safe for now
                             list=list+r+c+(r+temp*j)+c+oldPiece;
                      }                 
-                    //if king is save then record move
+                    //if king is safe then record move
                     chessBoard[r][c]="R";
                     chessBoard[r+temp*j][c]=oldPiece;
                     temp++;
@@ -133,18 +134,55 @@ public class AlphaBetaChess {
                             //assume king is safe for now
                             list=list+r+c+(r+temp*j)+c+oldPiece;
                      }                 
-                    //if king is save then record move
+                    //if king is safe then record move
                     chessBoard[r][c]="R";
                     chessBoard[r+temp*j][c]=oldPiece;
                 }
             } catch (Exception e) {}
-        }
-        
+            temp=1;
+        } 
         return list;
     }
     //possible moves for knight
     public static String possibleK(int i) {
-        String list="";
+        String list="", oldPiece;
+        int r=i/8, c=i%8;
+        
+        for (int j=-1; j<=1; j+=2){
+            for (int k=-1; k<=1; k+=2){
+                // tries first 4 patterns
+                try {
+                    if(Character.isLowerCase(chessBoard[r+j][c+k*2].charAt(0)) || " ".equals(chessBoard[r+j][c+k*2])) {
+                        // if enemy team piece or blank then remove knight from old position to new position
+                        oldPiece=chessBoard[r+j][c+k*2];
+                        chessBoard[r][c]=" ";
+                        chessBoard[r+j][c+k*2]="K";
+                        if (kingSafe()){
+                            //assume king is safe for now
+                            list=list+r+c+(r+j)+(c+k*2)+oldPiece;
+                        }
+                        chessBoard[r][c]="K";
+                        chessBoard[r+j][c+k*2]=oldPiece;
+                    }     
+                } catch (Exception e) {}
+                // tries second 4 patterns
+                try {
+                    if(Character.isLowerCase(chessBoard[r+j*2][c+k].charAt(0)) || " ".equals(chessBoard[r+j*2][c+k])) {
+                        // if enemy team piece or blank then remove knight from old position to new position
+                        oldPiece=chessBoard[r+j*2][c+k];
+                        chessBoard[r][c]=" ";
+                        chessBoard[r+j*2][c+k]="K";
+                        if (kingSafe()){
+                            //assume king is safe for now
+                            list=list+r+c+(r+j*2)+(c+k)+oldPiece;
+                        }
+                        chessBoard[r][c]="K";
+                        chessBoard[r+j*2][c+k]=oldPiece;
+                    }     
+                } catch (Exception e) {}
+            }   
+        }
+    
         return list;
     }
     //possible moves for bishop
